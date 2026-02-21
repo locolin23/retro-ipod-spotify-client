@@ -91,11 +91,15 @@ scope = "user-follow-read," \
         "user-read-playback-state," \
         "user-read-currently-playing," \
         "app-remote-control," \
+        "playlist-modify," \
         "playlist-read-private," \
         "playlist-read-collaborative," \
         "playlist-modify-public," \
         "playlist-modify-private," \
-        "streaming"
+        "streaming," \
+        "user-follow-modify," \
+        "user-follow-read"
+
 
 DATASTORE = datastore.Datastore()
 
