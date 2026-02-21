@@ -170,14 +170,20 @@ def get_album_tracks(id):
         tracks.append(UserTrack(track['name'], track['artists'][0]['name'], track['album']['name'], track['uri']))
     return tracks
 
+# def refresh_devices():
+#     results = sp.devices()
+#     DATASTORE.clearDevices()
+#     for _, item in enumerate(results['devices']):
+#         if "Spotifypod" in item['name']:
+#             print(item['name'])
+#             device = UserDevice(item['id'], item['name'], item['is_active'])
+#             DATASTORE.setUserDevice(device)
+            
+            
+            
 def refresh_devices():
-    results = sp.devices()
-    DATASTORE.clearDevices()
-    for _, item in enumerate(results['devices']):
-        if "Spotifypod" in item['name']:
-            print(item['name'])
-            device = UserDevice(item['id'], item['name'], item['is_active'])
-            DATASTORE.setUserDevice(device)
+    device = UserDevice('98bb0735e28656bac098d927d410c3138a4b5bca','raspotify', True)
+    DATASTORE.setUserDevice(device)
 
 def parse_album(album):
     artist = album['artists'][0]['name']
