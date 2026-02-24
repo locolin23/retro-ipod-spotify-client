@@ -108,6 +108,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
 pageSize = 50
 has_internet = False
+PLAYLIST_ID_TO_REFRESH = "3yEp6YngHelJ27Enocxvcq"  # Set your playlist ID here
 
 def check_internet(request):
     global has_internet
@@ -154,17 +155,11 @@ def get_playlist_tracks(id):
     while(results['next']):
         for _, item in enumerate(results['items']):
             track = item['track']
-            if track is None:
-                continue
-            else:
-                tracks.append(UserTrack(track['name'], track['artists'][0]['nam$
+            tracks.append(UserTrack(track['name'], track['artists'][0]['name'], track['album']['name'], track['uri']))
         results = sp.next(results)
     for _, item in enumerate(results['items']):
-        if item['track'] is None:
-            continue
-        else:
-            track = item['track']
-            tracks.append(UserTrack(track['name'], track['artists'][0]['name'],$
+        track = item['track']
+        tracks.append(UserTrack(track['name'], track['artists'][0]['name'], track['album']['name'], track['uri']))
     return tracks
 
 def get_album_tracks(id):
@@ -248,16 +243,18 @@ def refresh_data():
     while(results['next']):
         offset = results['offset']
         for idx, item in enumerate(results['items']):
-            tracks = get_playlist_tracks(item['id'])
-            DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-            totalindex = totalindex + 1
+            if item['id'] == PLAYLIST_ID_TO_REFRESH:
+                tracks = get_playlist_tracks(item['id'])
+                DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+                totalindex = totalindex + 1
         results = sp.next(results)
 
     offset = results['offset']
     for idx, item in enumerate(results['items']):
-        tracks = get_playlist_tracks(item['id'])
-        DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-        totalindex = totalindex + 1
+        if item['id'] == PLAYLIST_ID_TO_REFRESH:
+            tracks = get_playlist_tracks(item['id'])
+            DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+            totalindex = totalindex + 1
 
     print("Spotify playlists fetched: " + str(DATASTORE.getPlaylistCount()))
 
