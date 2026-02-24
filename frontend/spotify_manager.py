@@ -108,7 +108,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
 pageSize = 50
 has_internet = False
-PLAYLIST_ID_TO_REFRESH = "3yEp6YngHelJ27Enocxvcq"  # Set your playlist ID here
+PLAYLIST_ID_TO_REFRESH = "dde763d3bb984eca"  # Set your playlist ID here
 
 def check_internet(request):
     global has_internet
