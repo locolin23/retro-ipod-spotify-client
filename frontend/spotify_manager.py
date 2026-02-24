@@ -273,10 +273,10 @@ def refresh_data():
 
     print("Refreshed user albums")
 
-    results = sp.new_releases(limit=pageSize)
-    for idx, item in enumerate(results['albums']['items']):
-        album, tracks = parse_album(item)
-        DATASTORE.setNewRelease(album, tracks, index=idx)
+    # results = sp.new_releases(limit=pageSize)
+    # for idx, item in enumerate(results['albums']['items']):
+    #     album, tracks = parse_album(item)
+    #     DATASTORE.setNewRelease(album, tracks, index=idx)
 
     print("Refreshed new releases")
 
