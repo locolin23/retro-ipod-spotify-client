@@ -1,3 +1,5 @@
+from scipy.__config__ import show
+
 import spotipy
 import datastore
 from spotipy.oauth2 import SpotifyOAuth
@@ -200,7 +202,7 @@ def parse_album(album):
     return (UserAlbum(album['name'], artist, len(tracks), album['uri']), tracks)
 
 def parse_show(show):
-    publisher = show['publisher']
+    publisher = show.get('publisher', '')
     episodes = []
     if 'episodes' not in show :
         return get_show(show['id'])
