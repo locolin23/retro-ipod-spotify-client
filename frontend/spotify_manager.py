@@ -239,29 +239,20 @@ def refresh_data():
     print("Spotify artists fetched: " + str(DATASTORE.getArtistCount()))
 
     results = sp.current_user_playlists(limit=pageSize)
-    totalindex = 0
-    folder_name = "iPod "  # Replace with your folder name
-    
+    totalindex = 0 # variable to preserve playlist sort index when calling offset loop down below
     while(results['next']):
         offset = results['offset']
         for idx, item in enumerate(results['items']):
-            print(item['name'])
-            print(item.get('description', ''))
-            print("======")
-            
-            # Filter by folder name in description or check if it's a folder
-            if item.get('description', '').startswith(folder_name) or folder_name in item.get('name', ''):
-                tracks = get_playlist_tracks(item['id'])
-                DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-                totalindex = totalindex + 1
+            tracks = get_playlist_tracks(item['id'])
+            DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+            totalindex = totalindex + 1
         results = sp.next(results)
 
     offset = results['offset']
     for idx, item in enumerate(results['items']):
-        if item.get('description', '').startswith(folder_name) or folder_name in item.get('name', ''):
-            tracks = get_playlist_tracks(item['id'])
-            DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-            totalindex = totalindex + 1
+        tracks = get_playlist_tracks(item['id'])
+        DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+        totalindex = totalindex + 1
 
     print("Spotify playlists fetched: " + str(DATASTORE.getPlaylistCount()))
 
