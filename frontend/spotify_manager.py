@@ -186,7 +186,7 @@ def get_album_tracks(id):
             
             
 def refresh_devices():
-    device = UserDevice('10a2accdd363dd1418982fede43fa8e83f50f888','iPhone', True)
+    device = UserDevice('880395a6557840d91469dafe9b9c67f2b7da9fbf','iPhone', True)
     DATASTORE.clearDevices()
     DATASTORE.setUserDevice(device)
 
@@ -247,7 +247,6 @@ def refresh_data():
         for idx, item in enumerate(results['items']):
             print(item['name'])
             print(item.get('description', ''))
-            print(folder_name)
             print("======")
             
             # Filter by folder name in description or check if it's a folder
