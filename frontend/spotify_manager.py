@@ -243,16 +243,22 @@ def refresh_data():
     while(results['next']):
         offset = results['offset']
         for idx, item in enumerate(results['items']):
-            tracks = get_playlist_tracks(item['id'])
-            DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-            totalindex = totalindex + 1
+            try:
+                tracks = get_playlist_tracks(item['id'])
+                DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+                totalindex = totalindex + 1
+            except Exception as e:
+                print(f"Error fetching playlist '{item['name']}' (ID: {item['id']}): {e}")
         results = sp.next(results)
 
     offset = results['offset']
     for idx, item in enumerate(results['items']):
-        tracks = get_playlist_tracks(item['id'])
-        DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-        totalindex = totalindex + 1
+        try:
+            tracks = get_playlist_tracks(item['id'])
+            DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+            totalindex = totalindex + 1
+        except Exception as e:
+            print(f"Error fetching playlist '{item['name']}' (ID: {item['id']}): {e}")
 
     print("Spotify playlists fetched: " + str(DATASTORE.getPlaylistCount()))
 
