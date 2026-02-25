@@ -1,5 +1,3 @@
-from scipy.__config__ import show
-
 import spotipy
 import datastore
 from spotipy.oauth2 import SpotifyOAuth
