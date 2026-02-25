@@ -108,7 +108,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
 pageSize = 50
 has_internet = False
-PLAYLIST_ID_TO_REFRESH = "dde763d3bb984eca"  # Set your playlist ID here
 
 def check_internet(request):
     global has_internet
@@ -187,7 +186,8 @@ def get_album_tracks(id):
             
             
 def refresh_devices():
-    device = UserDevice('98bb0735e28656bac098d927d410c3138a4b5bca','raspotify', True)
+    device = UserDevice('10a2accdd363dd1418982fede43fa8e83f50f888','iPhone', True)
+    DATASTORE.clearDevices()
     DATASTORE.setUserDevice(device)
 
 def parse_album(album):
@@ -200,7 +200,7 @@ def parse_album(album):
     return (UserAlbum(album['name'], artist, len(tracks), album['uri']), tracks)
 
 def parse_show(show):
-    publisher = show.get('publisher', '')
+    publisher = show['publisher']
     episodes = []
     if 'episodes' not in show :
         return get_show(show['id'])
@@ -239,11 +239,19 @@ def refresh_data():
     print("Spotify artists fetched: " + str(DATASTORE.getArtistCount()))
 
     results = sp.current_user_playlists(limit=pageSize)
-    totalindex = 0 # variable to preserve playlist sort index when calling offset loop down below
+    totalindex = 0
+    folder_name = "iPod "  # Replace with your folder name
+    
     while(results['next']):
         offset = results['offset']
         for idx, item in enumerate(results['items']):
-            if item['id'] == PLAYLIST_ID_TO_REFRESH:
+            print(item['name'])
+            print(item.get('description', ''))
+            print(folder_name)
+            print("======")
+            
+            # Filter by folder name in description or check if it's a folder
+            if item.get('description', '').startswith(folder_name) or folder_name in item.get('name', ''):
                 tracks = get_playlist_tracks(item['id'])
                 DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
                 totalindex = totalindex + 1
@@ -251,7 +259,7 @@ def refresh_data():
 
     offset = results['offset']
     for idx, item in enumerate(results['items']):
-        if item['id'] == PLAYLIST_ID_TO_REFRESH:
+        if item.get('description', '').startswith(folder_name) or folder_name in item.get('name', ''):
             tracks = get_playlist_tracks(item['id'])
             DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
             totalindex = totalindex + 1
@@ -278,16 +286,16 @@ def refresh_data():
     #     album, tracks = parse_album(item)
     #     DATASTORE.setNewRelease(album, tracks, index=idx)
 
-    print("Refreshed new releases")
+    # print("Refreshed new releases")
 
-    results = sp.current_user_saved_shows(limit=pageSize)
-    if(len(results['items']) > 0):
-        offset = results['offset']
-        for idx, item in enumerate(results['items']):
-            show, episodes = parse_show(item['show'])
-            DATASTORE.setShow(show, episodes, index=idx)
+    # results = sp.current_user_saved_shows(limit=pageSize)
+    # if(len(results['items']) > 0):
+    #     offset = results['offset']
+    #     for idx, item in enumerate(results['items']):
+    #         show, episodes = parse_show(item['show'])
+    #         DATASTORE.setShow(show, episodes, index=idx)
 
-    print("Spotify Shows fetched")
+    # print("Spotify Shows fetched")
 
     refresh_devices()
     print("Refreshed devices")
