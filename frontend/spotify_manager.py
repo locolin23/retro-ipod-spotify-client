@@ -238,29 +238,29 @@ def refresh_data():
 
     print("Spotify artists fetched: " + str(DATASTORE.getArtistCount()))
 
-    results = sp.current_user_playlists(limit=pageSize)
-    totalindex = 0 # variable to preserve playlist sort index when calling offset loop down below
-    while(results['next']):
-        offset = results['offset']
-        for idx, item in enumerate(results['items']):
-            try:
-                tracks = get_playlist_tracks(item['id'])
-                DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-                totalindex = totalindex + 1
-            except Exception as e:
-                print(f"Error fetching playlist '{item['name']}' (ID: {item['id']}): {e}")
-        results = sp.next(results)
+    # results = sp.current_user_playlists(limit=pageSize)
+    # totalindex = 0 # variable to preserve playlist sort index when calling offset loop down below
+    # while(results['next']):
+    #     offset = results['offset']
+    #     for idx, item in enumerate(results['items']):
+    #         try:
+    #             tracks = get_playlist_tracks(item['id'])
+    #             DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+    #             totalindex = totalindex + 1
+    #         except Exception as e:
+    #             print(f"Error fetching playlist '{item['name']}' (ID: {item['id']}): {e}")
+    #     results = sp.next(results)
 
-    offset = results['offset']
-    for idx, item in enumerate(results['items']):
-        try:
-            tracks = get_playlist_tracks(item['id'])
-            DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
-            totalindex = totalindex + 1
-        except Exception as e:
-            print(f"Error fetching playlist '{item['name']}' (ID: {item['id']}): {e}")
+    # offset = results['offset']
+    # for idx, item in enumerate(results['items']):
+    #     try:
+    #         tracks = get_playlist_tracks(item['id'])
+    #         DATASTORE.setPlaylist(UserPlaylist(item['name'], totalindex, item['uri'], len(tracks)), tracks, index=idx + offset)
+    #         totalindex = totalindex + 1
+    #     except Exception as e:
+    #         print(f"Error fetching playlist '{item['name']}' (ID: {item['id']}): {e}")
 
-    print("Spotify playlists fetched: " + str(DATASTORE.getPlaylistCount()))
+    # print("Spotify playlists fetched: " + str(DATASTORE.getPlaylistCount()))
 
     results = sp.current_user_saved_albums(limit=pageSize)
     while(results['next']):
